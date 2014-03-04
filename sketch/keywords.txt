@@ -1,0 +1,10 @@
+IPCBuffer	KEYWORD1
+open	KEYWORD2
+write	KEYWORD2
+read	KEYWORD2
+close	KEYWORD2
+getSemLock	KEYWORD2
+getSemSpace	KEYWORD2
+getSemData	KEYWORD2
+startMem	KEYWORD2
+startSem	KEYWORD2

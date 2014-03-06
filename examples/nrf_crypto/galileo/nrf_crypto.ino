@@ -5,8 +5,7 @@
 #include <nrf24.h>
 #include <nRF24L01.h>
 #include <IPCBuffer.h>
-#include <Protocol.h>
-#include <MyRingBuffer.h>
+
 
 // state
 uint8_t hbt_output = 0;
@@ -36,7 +35,6 @@ uint8_t spi_transfer(uint8_t tx)
     return rx;
 }
     
-Protocol myProtocol(0);
 IPCBuffer myBuffer(1); //create shared memory buffer  
     
 void setup() {                
@@ -78,8 +76,6 @@ void loop() {
       temp = myBuffer.write(rx_data_array);
   }
 
-  myProtocol.respond();
-    
   delay(COUNTER_RATE);
 
   if(1 < task_hbt){task_hbt--;}

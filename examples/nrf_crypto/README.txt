@@ -1,3 +1,6 @@
+More information can be found here:
+http://www.instructables.com/id/Using-IPC-for-Wireless-Encryption-with-Intel-Galil/#step0
+
 Galileo
 -------
 

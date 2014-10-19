@@ -110,6 +110,27 @@ uint8_t IPCBuffer::read(void* dest){
 	return 0;
 }
 
+uint8_t IPCBuffer::available(){
+   //read from tail, write at head
+   //empty if head == tail
+   uint8_t count = 0;
+   semop(sid_lock, &sem_down,1); //protect against other readers/writers
+   // enter critical section
+
+   size_t head = *(shared_memory+0*sizeof(size_t));   
+   size_t tail = *(shared_memory+1*sizeof(size_t)); 
+
+   if(head >= tail){
+      count = head - tail;
+   }else{
+      count = head + _length - tail;
+   }
+
+   // exit critical section
+   semop(sid_lock, &sem_up,1); //allow other readers/writers to make progress
+   return count;
+}
+
 
 uint8_t IPCBuffer::close(){
 

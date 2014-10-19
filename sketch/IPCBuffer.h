@@ -20,6 +20,7 @@ class IPCBuffer{
 		uint8_t open(size_t length, size_t width);
 		uint8_t write(void* source);
 		uint8_t read(void* dest);		
+                uint8_t available();
 		uint8_t close();
 		uint16_t getSemLock();
 		uint16_t getShm();

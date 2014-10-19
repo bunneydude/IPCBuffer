@@ -49,7 +49,7 @@ class IPCBuffer():
          self.sem_lock.acquire() #block anyone else from touching buffer
 
          self.head = int(self.mem.read(4,0)[::-1].encode('hex'),16) 
-         self.mem.write(struct.pack('<b',data), 16 + self.head*self.width)
+         self.mem.write(struct.pack('<B',data), 16 + self.head*self.width)
          self.mem.write(struct.pack('<I',(self.head+1)%self.length), 0)
 
          self.sem_lock.release()

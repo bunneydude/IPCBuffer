@@ -9,3 +9,8 @@ Installation
 2) copy the files in /sketch to your Arduino IDE as a library
 
 See the /examples folder for a demo using nRF modules and encryption
+
+Known issues
+------------
+
+Setting a buffer length of 1 isn't allowed and will cause undefined behavior.

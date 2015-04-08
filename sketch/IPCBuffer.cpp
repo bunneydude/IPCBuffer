@@ -3,8 +3,16 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/sem.h>
-#include "Arduino.h"
+#include <iostream>
+#include <errno.h>
 #include "IPCBuffer.h"
+
+#ifdef EDISON
+#include <stdlib.h>
+#else
+#include "Arduino.h"
+#endif
+
 
 IPCBuffer::IPCBuffer(uint8_t id){
 	_id = id;
@@ -17,10 +25,13 @@ IPCBuffer::IPCBuffer(uint8_t id){
 uint8_t IPCBuffer::startMem(uint32_t* shmid, key_t key, uint8_t** mem, size_t size){
 	// Setup shared memory
 	if ((*shmid = shmget(key, size, IPC_CREAT | 0666)) < 0){
+        std::cout << "First SHM call failed" << std::endl;
 		return 1;
 	}
 	// Attached shared memory
 	if ((*mem = (uint8_t *)shmat(*shmid, NULL, 0)) == (uint8_t *) -1){
+        std::cout << "Second SHM call failed: " << errno << std::endl;
+        std::cout << strerror(errno) << std::endl;
 		return 2;
 	}
 	return 0;
@@ -54,6 +65,8 @@ uint8_t IPCBuffer::open(size_t length, size_t width){
 	uint8_t temp;
 
 	temp = startMem(&shmid_queue, key_shm_queue, &shared_memory, length*width+sizeof(size_t)*4);
+    std::cout << "StartMem returned " << temp << std::endl;
+
 	//set up shared memory header before exposing semaphores
 	//python scripts will fail if they try to run at this point because
 	//the semaphores don't exist yet.
@@ -65,8 +78,13 @@ uint8_t IPCBuffer::open(size_t length, size_t width){
 	*(shared_memory + 3*sizeof(size_t)) = length;
 
 	temp = startSem(&sid_lock, key_s_lock, 1);	
-	temp = startSem(&sid_data, key_s_data, 0);
-	temp = startSem(&sid_space, key_s_space, length);
+    std::cout << "lock startSem returned " << temp << std::endl;
+	
+    temp = startSem(&sid_data, key_s_data, 0);
+    std::cout << "data startSem returned " << temp << std::endl;
+	
+    temp = startSem(&sid_space, key_s_space, length-1);
+    std::cout << "space startSem returned " << temp << std::endl;
 
 	return 0;
 }

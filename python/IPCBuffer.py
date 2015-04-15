@@ -61,7 +61,7 @@ class IPCBuffer():
          self.tail = int(self.mem.read(4,4)[::-1].encode('hex'),16) 
          self.sem_lock.release()
 
-         if(head > tail):
+         if(self.head >= self.tail):
             return self.head - self.tail
          else:
             return self.head + self.length - self.tail
